@@ -1,0 +1,62 @@
+J.A.R.V.I.S. MDS Evaluation Protocol
+
+Purpose
+Measure whether MDS-driven adaptive behavior improves perceived personalization quality over repeated sessions.
+
+Study Design
+1. Recruit 5 participants.
+2. For each participant, run 10 sessions:
+   - Sessions 1-5: baseline behavior
+   - Sessions 6-10: MDS-enabled adaptive behavior
+3. Keep session tasks comparable across both phases.
+4. After every session, collect ratings on the evaluation sheet.
+
+Core Human Questions (1-5 scale)
+1. Did the assistant feel more personally relevant in this session?
+2. Did the assistant seem to remember useful context from earlier interactions?
+3. Did the assistant feel better over time?
+4. Overall session quality rating.
+
+Suggested Task Mix
+1. General factual query
+2. Preference-based recommendation
+3. Follow-up on a previous topic
+4. Tool-assisted task
+5. Personal planning / context continuity query
+6. Optional document-grounded query over the local knowledge base
+
+Logging Sources
+1. Human ratings:
+   docs/MDS_Human_Evaluation_Sheet.csv
+2. Runtime events:
+   backend/logs/experiment_events.jsonl
+
+Useful Logged Events
+1. session_start
+2. session_connected
+3. initial_reply_generated
+4. tool_invocation
+
+Primary Analysis
+1. Compute average human score for sessions 1-5 (baseline).
+2. Compute average human score for sessions 6-10 (MDS-enabled).
+3. Report:
+   - mean before
+   - mean after
+   - absolute delta
+   - percentage improvement
+
+Recommended Metrics to Report
+1. Perceived personalization score
+2. Continuity / memory usefulness score
+3. Overall satisfaction score
+4. Tool success rate from logs
+5. Tool latency from logs
+
+Example Paper Sentence
+"Across repeated sessions, MDS-enabled adaptive behavior improved perceived personalization from X/5 to Y/5, while maintaining tool success rate of Z%."
+
+Important Integrity Rules
+1. Do not invent metrics before the study is run.
+2. Keep baseline and MDS-enabled conditions comparable.
+3. Record failures as well as successes.

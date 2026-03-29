@@ -1,0 +1,27 @@
+{
+  "user_name": "Your Name",
+  "assistant_name": "Jarvis",
+  "llm": {
+    "provider": "google",
+    "model": "gemini-2.5-flash-native-audio-preview-09-2025",
+    "voice": "Puck"
+  },
+  "experiments": {
+    "mds_enabled": true
+  },
+  "knowledge_base": {
+    "documents_dir": "knowledge_base"
+  },
+  "api_keys": {
+    "livekit_url": "wss://your-project.livekit.cloud",
+    "livekit_key": "APIxxxxxxxx",
+    "livekit_secret": "your-livekit-secret",
+    "google": "",
+    "openai": "",
+    "mem0": "",
+    "google_search": "",
+    "search_engine_id": "",
+    "openweather": "",
+    "n8n_url": "http://localhost:5678/mcp"
+  }
+}

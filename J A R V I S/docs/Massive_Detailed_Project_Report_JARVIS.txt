@@ -1,0 +1,274 @@
+===============================================================================
+J.A.R.V.I.S. - COMPREHENSIVE PROJECT REPORT
+Joint Adaptive Real-time Voice Intelligence System
+===============================================================================
+
+1. PROJECT OVERVIEW
+-------------------------------------------------------------------------------
+J.A.R.V.I.S. is a real-time voice assistant framework that combines persistent
+memory, adaptive personalization, local document grounding, and MCP-based tool
+integration inside a single full-stack architecture. The project is designed to
+provide low-latency voice interaction while preserving long-term continuity
+across sessions.
+
+Unlike a basic chat interface wrapped with speech-to-text and text-to-speech,
+this system is structured as a real-time agent pipeline. It uses LiveKit for
+voice transport, configurable large language model providers for response
+generation, a hybrid memory subsystem for user continuity, and a local
+knowledge-base folder for grounded answers over user-supplied files.
+
+
+2. PURPOSE AND PROBLEM STATEMENT
+-------------------------------------------------------------------------------
+The project addresses three recurring limitations in common voice assistant
+systems:
+
+1. Stateless interaction:
+   Many assistants do not meaningfully preserve user-specific continuity across
+   repeated sessions.
+
+2. Weak personalization:
+   Even when prior context is stored, it is often not converted into an explicit
+   behavioral control signal.
+
+3. Limited grounding and actionability:
+   Typical assistants either remain purely conversational or require tightly
+   coupled integrations for document access and workflow execution.
+
+J.A.R.V.I.S. is intended to solve these limitations by combining:
+- persistent user memory,
+- explicit MDS-based adaptation,
+- grounded retrieval over local project documents,
+- dynamic external tool invocation through MCP.
+
+
+3. MAIN NOVELTY
+-------------------------------------------------------------------------------
+The primary novelty of the project is the Memory Depth Score (MDS) driven
+behavior model.
+
+The important idea is not just that the assistant stores memory, but that it
+quantifies personalization depth and uses that score to change runtime response
+strategy. This creates a closed loop:
+
+memory accumulation -> MDS computation -> response-policy adaptation
+
+The project's secondary novelty is the systems-level unification of:
+- MDS-driven personalization,
+- local document grounding,
+- MCP-based tool use,
+- real-time voice interaction.
+
+This combination makes the assistant persistent, grounded, and action-capable
+inside one deployable runtime.
+
+
+4. CORE CAPABILITIES
+-------------------------------------------------------------------------------
+- Real-time voice interaction using LiveKit Agents.
+- Configurable LLM backend using Google or OpenAI realtime-capable models.
+- Persistent memory with Mem0 cloud support and local JSON fallback.
+- Memory Depth Score (MDS) for personalization measurement.
+- Adaptive behavior tiers: low, medium, high.
+- Adaptive response-length rules at prompt level.
+- Local document grounding over files placed in the `knowledge_base/` folder.
+- MCP-based tool integration for external workflows such as Gmail, Google Drive,
+  and n8n-powered automations.
+- Bootstrap automation for local environment setup and launch.
+
+
+5. HIGH-LEVEL ARCHITECTURE
+-------------------------------------------------------------------------------
+The system is organized into the following components:
+
+1. Frontend:
+   A Next.js application that provides the setup flow, settings interface, and
+   voice session UI.
+
+2. Voice transport layer:
+   LiveKit handles real-time audio transport and session orchestration.
+
+3. Agent runtime:
+   A Python backend initializes the agent session, prompt state, memory, tools,
+   and document-grounding logic.
+
+4. Memory layer:
+   User interactions are stored in Mem0 when configured, or in local JSON when
+   cloud memory is unavailable.
+
+5. Knowledge-base layer:
+   User-provided files from the local `knowledge_base/` folder are parsed,
+   chunked, and made searchable at runtime.
+
+6. Tool layer:
+   MCP tools are dynamically discovered and exposed to the assistant through the
+   LiveKit function-calling path.
+
+
+6. MEMORY DEPTH SCORE (MDS)
+-------------------------------------------------------------------------------
+MDS is a bounded 0-100 score derived from three sub-components:
+
+- Memory Density: 50%
+- Session Continuity: 30%
+- Topic Breadth: 20%
+
+This score is computed at session startup and mapped to one of three behavior
+tiers:
+
+- Low:
+  exploratory behavior and preference discovery
+
+- Medium:
+  selective use of remembered preferences and context
+
+- High:
+  proactive, continuity-aware personalized responses
+
+The MDS mechanism makes personalization measurable and operational rather than
+purely descriptive.
+
+
+7. LOCAL DOCUMENT GROUNDING
+-------------------------------------------------------------------------------
+The project now includes a local document-grounding subsystem.
+
+Purpose:
+- allow the assistant to answer from user-provided project files,
+- improve grounding over reports, notes, summaries, and structured local data,
+- support file-aware interaction without depending on an external vector store.
+
+How it works:
+1. The backend scans the configured documents directory.
+2. It supports these file types:
+   - `.txt`
+   - `.md`
+   - `.json`
+   - `.csv`
+   - `.docx`
+   - `.pdf`
+3. Extracted text is segmented into compact chunks.
+4. Local runtime tools are exposed:
+   - `list_local_documents`
+   - `search_local_documents`
+5. The assistant uses these tools when the user asks about PDFs, files, reports,
+   notes, or uploaded material.
+
+This is a lightweight local retrieval design. It is document-grounded and
+working, but it is not described as a full vector-database RAG stack.
+
+
+8. MCP TOOL INTEGRATION
+-------------------------------------------------------------------------------
+The MCP integration layer allows J.A.R.V.I.S. to work with external workflow
+systems without hardcoding every tool into the assistant runtime.
+
+Current role of MCP:
+- discover tools dynamically,
+- bind schemas into callable runtime functions,
+- allow the LLM to invoke these tools naturally within a session.
+
+This supports extensibility for practical tasks such as mail retrieval,
+document search in external platforms, and workflow automation through n8n.
+
+
+9. IMPLEMENTATION DETAILS
+-------------------------------------------------------------------------------
+Important backend files:
+- `backend/main.py`
+- `backend/config.py`
+- `backend/prompts.py`
+- `backend/memory.py`
+- `backend/memory_worker.py`
+- `backend/document_store.py`
+- `backend/mcp_client/server.py`
+- `backend/mcp_client/util.py`
+- `backend/mcp_client/agent_tools.py`
+
+Important frontend files:
+- `frontend/app/setup/page.tsx`
+- `frontend/app/settings/page.tsx`
+- `frontend/app/(app)/page.tsx`
+- `frontend/app/api/config/route.ts`
+- `frontend/app/api/connection-details/route.ts`
+- `frontend/components/app.tsx`
+- `frontend/components/session-view.tsx`
+
+
+10. DATA FLOW
+-------------------------------------------------------------------------------
+1. The user opens the frontend and starts a voice session.
+2. The frontend requests connection details and joins LiveKit.
+3. The backend initializes memory, MDS, document status, and prompt context.
+4. The agent session starts with personalization tier and knowledge-base context.
+5. If needed, the assistant calls:
+   - local document tools,
+   - MCP tools,
+   - utility tools.
+6. The assistant responds in real time.
+7. Conversation data is persisted asynchronously and structured events are
+   logged for later analysis.
+
+
+11. VERIFIED BENCHMARKS
+-------------------------------------------------------------------------------
+The currently verified local 50-run benchmark shows:
+
+MDS computation
+- runs: 50
+- successes: 50
+- success rate: 100%
+- average latency: 1.23 ms
+- minimum latency: 1.12 ms
+- maximum latency: 2.28 ms
+- standard deviation: 0.17 ms
+- p95 latency: 1.34 ms
+
+Datetime utility baseline
+- runs: 50
+- successes: 50
+- success rate: 100%
+- average latency: 0.24 ms
+- minimum latency: 0.21 ms
+- maximum latency: 0.60 ms
+- standard deviation: 0.06 ms
+- p95 latency: 0.28 ms
+
+These values support the claim that the MDS layer is computationally lightweight
+for real-time use.
+
+
+12. PROFESSIONAL VALUE OF THE PROJECT
+-------------------------------------------------------------------------------
+The project is suitable for presentation as:
+- a real-time voice assistant framework,
+- a memory-aware adaptive agent,
+- a grounded assistant with local document support,
+- a modular architecture for long-term personalized human-AI interaction.
+
+For research presentation, the strongest angle is:
+- MDS as a quantified personalization mechanism,
+- combined with local document grounding and MCP-based tool use in one voice
+  pipeline.
+
+
+13. LIMITATIONS OF CURRENT VERIFIED RESULTS
+-------------------------------------------------------------------------------
+The project has strong implemented systems features, but measured benchmark
+results currently cover the MDS computation path rather than a full longitudinal
+user study. For this reason, project documentation should not claim unmeasured
+human-rating improvements or unsupported end-to-end tool success percentages.
+
+
+14. CONCLUSION
+-------------------------------------------------------------------------------
+J.A.R.V.I.S. is not just a voice interface. It is a memory-aware, grounded,
+tool-augmented real-time assistant architecture. Its core contribution is the
+conversion of accumulated user memory into a bounded, operational personalization
+signal through MDS. With the addition of local document grounding and MCP-based
+runtime tools, the project provides a strong foundation for persistent and
+practical voice AI systems.
+
+===============================================================================
+END OF REPORT
+===============================================================================

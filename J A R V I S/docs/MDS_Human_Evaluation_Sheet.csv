@@ -1,0 +1,11 @@
+participant_id,session_id,condition,session_number,task_type,mds_score,personalisation_level,personally_relevant_score_1_to_5,memory_continuity_score_1_to_5,improved_over_time_score_1_to_5,overall_quality_score_1_to_5,tool_used,tool_name,comments
+P1,S1,baseline,1,factual,0,low,,,,,,,,
+P1,S2,baseline,2,preference,0,low,,,,,,,,
+P1,S3,baseline,3,follow_up,0,low,,,,,,,,
+P1,S4,baseline,4,tool_task,0,low,,,,,,,,
+P1,S5,baseline,5,planning,0,low,,,,,,,,
+P1,S6,mds_enabled,6,factual,0,low,,,,,,,,
+P1,S7,mds_enabled,7,preference,0,low,,,,,,,,
+P1,S8,mds_enabled,8,follow_up,0,low,,,,,,,,
+P1,S9,mds_enabled,9,tool_task,0,low,,,,,,,,
+P1,S10,mds_enabled,10,planning,0,low,,,,,,,,

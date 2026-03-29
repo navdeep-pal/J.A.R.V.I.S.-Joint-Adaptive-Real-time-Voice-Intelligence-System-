@@ -1,0 +1,14 @@
+# Byte Order Marks fix — regenerated clean UTF-8
+livekit-agents[codecs,images]>=1.0
+livekit-plugins-google>=1.0
+livekit-plugins-openai>=1.0
+livekit-plugins-silero>=1.0
+livekit-plugins-noise-cancellation>=0.2.0
+livekit>=1.0
+python-dotenv>=1.0.0
+requests>=2.32.0
+mem0ai>=0.1.0
+pydantic>=2.0.0
+anyio>=4.0.0
+mcp>=1.0.0
+pypdf>=5.0.0
